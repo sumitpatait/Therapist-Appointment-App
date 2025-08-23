@@ -1,0 +1,25 @@
+package com.tapp.therapistappointmentapp.service;
+
+import com.tapp.therapistappointmentapp.model.Therapist; // <-- USE THERAPIST MODEL
+import com.tapp.therapistappointmentapp.repository.TherapistRepository; // <-- USE THERAPIST REPOSITORY
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final TherapistRepository therapistRepository; // <-- CORRECT REPOSITORY
+
+    public UserDetailsServiceImpl(TherapistRepository therapistRepository) {
+        this.therapistRepository = therapistRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // Now finds the Therapist entity, which implements UserDetails
+        return therapistRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Therapist not found with email: " + email));
+    }
+}

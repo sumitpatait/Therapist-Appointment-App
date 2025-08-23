@@ -1,0 +1,219 @@
+/* ===== IMPORT FONT ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root {
+    --primary: #00d481;
+    /* A vibrant green for a fresh feel */
+    --primary-light: #00e691;
+    --danger: #ef4444;
+    --text-light: #e2e8f0;
+    --bg-glass: rgba(18, 25, 41, 0.7);
+    --blur: 15px;
+    --radius: 12px;
+    --transition: 0.35s cubic-bezier(.25, .8, .25, 1);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --glow-soft: rgba(0, 212, 129, 0.15);
+    --star-color: #f39c12;
+    /* Gold color for stars */
+}
+
+
+/* ===== OVERLAY BACKDROP ===== */
+
+.review-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+
+/* ===== FORM CONTAINER ===== */
+
+.review-form {
+    background: var(--bg-glass);
+    padding: 32px;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--shadow);
+    color: var(--text-light);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--border-glow);
+    animation: fadeIn 0.4s var(--transition) forwards;
+}
+
+
+/* ===== HEADINGS ===== */
+
+.review-form h2 {
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+
+/* ===== INPUTS & STAR RATING ===== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    color: var(--text-light);
+    opacity: 0.8;
+    font-family: 'Inter', sans-serif;
+}
+
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    resize: vertical;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    font-family: 'Inter', sans-serif;
+}
+
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 12px var(--glow-soft);
+}
+
+
+/* Star rating styles */
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    /* This reverses the order so styling works correctly */
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: var(--text-muted);
+    /* Color of unselected stars */
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    margin: 0 4px;
+}
+
+
+/* Fill stars on hover and for selected ratings */
+
+.star-rating label::before {
+    content: '★';
+}
+
+.star-rating input[type="radio"]:checked~label::before,
+.star-rating label:hover::before,
+.star-rating label:hover~label::before {
+    color: var(--star-color);
+    /* Color of selected and hovered stars */
+}
+
+
+/* ===== BUTTONS ===== */
+
+.btn-primary,
+.btn-secondary {
+    margin-top: 10px;
+    padding: 12px 20px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    margin-left: 10px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary);
+    color: #000;
+}
+
+
+/* ===== MESSAGES ===== */
+
+.message.success {
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(135, 208, 104, 0.15);
+    /* A softer green for success */
+    color: #a5d6a7;
+    border: 1px solid rgba(135, 208, 104, 0.3);
+    border-radius: var(--radius);
+    font-weight: 500;
+    text-align: center;
+}
+
+.message.error {
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius);
+    font-weight: 500;
+    text-align: center;
+}
+
+
+/* ===== ANIMATION ===== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

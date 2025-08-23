@@ -1,0 +1,161 @@
+/* ===== IMPORT FONT ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* ===== ROOT ===== */
+
+:root {
+    --primary: #00ffd5;
+    --primary-dark: #00bfa6;
+    --card-bg: rgba(25, 25, 25, 0.75);
+    --border-glow: rgba(0, 255, 213, 0.4);
+    --font-light: #ffffff;
+    --bg-main: linear-gradient(145deg, #0e0e0e, #1c1c1c);
+    --glass-blur: 18px;
+    --transition: 0.3s ease-in-out;
+    --radius: 20px;
+    --shadow: 0 20px 40px rgba(0, 255, 213, 0.1);
+}
+
+
+/* ===== BODY STYLING (optional) ===== */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-main);
+    color: var(--font-light);
+}
+
+
+/* ===== ADMIN DASHBOARD WRAPPER ===== */
+
+.admin-dashboard-page {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 40px;
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    background: rgba(25, 25, 25, 0.75);
+    /* ✅ semi-transparent */
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--border-glow);
+    animation: fadeIn 0.8s ease;
+}
+
+
+/* ===== HEADINGS ===== */
+
+.admin-dashboard-page h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.admin-dashboard-page h3 {
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--primary-dark);
+    padding-bottom: 8px;
+}
+
+
+/* ===== USER INFO ===== */
+
+.admin-dashboard-page p {
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+
+/* ===== DASHBOARD LINKS ===== */
+
+.dashboard-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background: var(--primary-dark);
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    color: var(--font-light);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 0 12px rgba(0, 255, 213, 0.2);
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient( 120deg, transparent, rgba(0, 255, 213, 0.2), transparent);
+    transition: all 0.8s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background: var(--primary);
+    box-shadow: 0 0 25px rgba(0, 255, 213, 0.4);
+}
+
+
+/* ===== CONTENT SECTION ===== */
+
+.dashboard-content {
+    margin-top: 40px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 30px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(0, 255, 213, 0.1);
+    background: rgba(25, 25, 25, 0.75);
+    /* ✅ semi-transparent */
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: inset 0 0 12px rgba(0, 255, 213, 0.05);
+}
+
+
+/* ===== ERROR MESSAGE ===== */
+
+.error-message {
+    margin: 80px auto;
+    max-width: 600px;
+    background: rgba(255, 50, 50, 0.1);
+    padding: 30px;
+    border-radius: var(--radius);
+    color: #ff6b6b;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid rgba(255, 50, 50, 0.3);
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.1);
+}
+
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

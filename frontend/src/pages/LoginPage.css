@@ -1,0 +1,186 @@
+/* ============= IMPORT FONT ============= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* ============= ROOT VARIABLES ============= */
+
+:root {
+    --radius: 16px;
+    --transition: 0.35s cubic-bezier(.25, .8, .25, 1);
+    --bg-overlay-dark: rgba(10, 10, 20, 0.75);
+    --text: #f2f2f2;
+    --muted: #cfd8dc;
+    --primary: #42a5f5;
+    --primary-light: #64b5f6;
+    --card-bg: rgba(22, 22, 34, 0.6);
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    --glow-soft: rgba(66, 165, 245, 0.2);
+}
+
+
+/* ============= BASE STYLES ============= */
+
+
+/*
+ * These styles are applied to the body for a full-page background.
+ * The image is located in the assets folder.
+ */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text);
+    background-color: #121212;
+    overflow-x: hidden;
+}
+
+
+/* This creates a full-screen, static background image */
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/loginpage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: brightness(0.8) grayscale(0.5);
+    z-index: -2;
+    /* Pushes it behind all other content */
+}
+
+
+/* A dark overlay for readability, placed between the background and content */
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-overlay-dark);
+    z-index: -1;
+    /* Puts the overlay between the image and the content */
+}
+
+
+/*
+ * The main container for the login form, placed on top of the background.
+ * It's centered using flexbox on the body.
+ */
+
+.auth-form {
+    max-width: 450px;
+    width: 90%;
+    margin: 80px auto;
+    padding: 40px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 1;
+    /* Ensures content is on top */
+    position: relative;
+    /* For z-index to work */
+    animation: fadeIn 0.6s var(--transition) forwards;
+}
+
+.auth-form h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--glow-soft);
+    outline: none;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    /* background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    box-shadow: 0 6px 20px var(--glow-soft); */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px var(--glow-soft);
+}
+
+.message.error {
+    background: rgba(244, 67, 54, 0.15);
+    color: #ef9a9a;
+    padding: 10px;
+    border-radius: var(--radius);
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.auth-form p {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.auth-form p a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-form p a:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

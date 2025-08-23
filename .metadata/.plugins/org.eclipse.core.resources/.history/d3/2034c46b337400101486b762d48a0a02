@@ -1,0 +1,41 @@
+// Auth Service
+package com.tapp.therapistappointmentapp.service;
+
+import com.tapp.therapistappointmentapp.dto.LoginRequest;
+import com.tapp.therapistappointmentapp.dto.JwtResponse;
+import com.tapp.therapistappointmentapp.model.Therapist; // <-- USE THERAPIST
+import com.tapp.therapistappointmentapp.repository.TherapistRepository; // <-- USE THERAPIST REPO
+import com.tapp.therapistappointmentapp.util.JwtUtils;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final TherapistRepository therapistRepository; // <-- USE THERAPIST REPOSITORY
+
+    public AuthService(AuthenticationManager authenticationManager, JwtUtils jwtUtils, TherapistRepository therapistRepository) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+        this.therapistRepository = therapistRepository;
+    }
+
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Therapist therapist = therapistRepository.findByEmail(userDetails.getUsername()) // <-- FIND THERAPIST BY EMAIL
+                .orElseThrow(() -> new RuntimeException("Therapist not found after authentication!"));
+
+        return new JwtResponse(jwt, therapist.getId(), therapist.getEmail(), therapist.getRole().name());
+    }
+}

@@ -1,0 +1,71 @@
+package com.tapp.therapistappointmentapp.util;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.SignatureException; // This is directly thrown by 0.9.1 for signature issues
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Component
+public class JwtUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration.ms}")
+    private int jwtExpirationMs;
+
+    // Modified key method for JJWT 0.9.1 - uses byte array from secret string directly
+    private byte[] getKeyBytes() {
+        return jwtSecret.getBytes();
+    }
+
+    public String generateJwtToken(Authentication authentication) {
+        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject(userPrincipal.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                // Corrected signWith for JJWT 0.9.1 - takes SignatureAlgorithm and byte[]
+                .signWith(SignatureAlgorithm.HS512, getKeyBytes())
+                .compact();
+    }
+
+    public String getUserNameFromJwtToken(String token) {
+        // Corrected parser method for JJWT 0.9.1 - uses Jwts.parser()
+        return Jwts.parser().setSigningKey(getKeyBytes())
+                .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            // Corrected parser method for JJWT 0.9.1 - uses Jwts.parser()
+            Jwts.parser().setSigningKey(getKeyBytes()).parseClaimsJws(authToken);
+            return true;
+        } catch (SignatureException e) { // JJWT 0.9.1 throws this for bad signatures
+            logger.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            logger.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT claims string is empty: {}", e.getMessage());
+        }
+        return false;
+    }
+}

@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+:root {
+    --primary: #00ffd5;
+    --text-light: #f2f2f2;
+    --bg-glass: rgba(20, 20, 20, 0.75);
+    --blur: 16px;
+    --radius: 12px;
+    --transition: 0.3s ease;
+    --shadow: 0 8px 24px rgba(0, 255, 213, 0.06);
+}
+
+
+/* ===== NAVBAR CONTAINER ===== */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    box-shadow: var(--shadow);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* ===== BRAND ===== */
+
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.navbar-brand:hover {
+    color: #00e6c0;
+}
+
+
+/* ===== NAVIGATION ITEMS ===== */
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+
+/* ===== NAV ITEM LINK ===== */
+
+.nav-item {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-item:hover {
+    color: var(--primary);
+}
+
+
+/* ===== LOGOUT BUTTON ===== */
+
+.nav-button {
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.nav-button:hover {
+    background-color: var(--primary);
+    color: #000;
+}
+
+
+/* ===== MOBILE WRAP ===== */
+
+
+/* Remove or comment this media query block if you don't want vertical nav on small screens */
+
+@media (max-width: 768px) {
+    /* Optional: shrink padding for mobile but keep layout horizontal */
+    .navbar {
+        padding: 12px 20px;
+    }
+    .navbar-nav {
+        flex-wrap: wrap;
+        /* allow wrapping if needed */
+        flex-direction: row;
+        /* <--- Force horizontal */
+        justify-content: flex-end;
+        gap: 12px;
+    }
+    .nav-item,
+    .nav-button {
+        width: auto;
+        /* no full width on mobile */
+    }
+}

@@ -1,0 +1,101 @@
+package com.tapp.therapistappointmentapp.filter;
+
+import com.tapp.therapistappointmentapp.service.UserDetailsServiceImpl;
+import com.tapp.therapistappointmentapp.util.JwtUtils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// REMOVE THIS IMPORT: import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+public class JwtRequestFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
+
+    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtUtils jwtUtils;
+    // REMOVE THIS FIELD: private final AuthenticationManager authenticationManager;
+
+    public JwtRequestFilter(UserDetailsServiceImpl userDetailsService, JwtUtils jwtUtils) { // <--- UPDATED CONSTRUCTOR: Remove AuthenticationManager
+        this.userDetailsService = userDetailsService;
+        this.jwtUtils = jwtUtils;
+        // REMOVE THIS LINE: this.authenticationManager = authenticationManager;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        final String authorizationHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwt = null;
+
+        logger.debug("JwtRequestFilter: Processing request for URI: {}", request.getRequestURI());
+        logger.debug("JwtRequestFilter: Authorization Header: {}", authorizationHeader);
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7);
+            logger.debug("JwtRequestFilter: Extracted JWT: {}", jwt);
+            try {
+                username = jwtUtils.getUserNameFromJwtToken(jwt);
+                logger.debug("JwtRequestFilter: Username from JWT: {}", username);
+            } catch (Exception e) {
+                logger.error("JwtRequestFilter: Cannot parse or validate JWT token: {}", e.getMessage());
+            }
+        } else {
+            logger.debug("JwtRequestFilter: Authorization header is missing or does not start with Bearer.");
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            logger.debug("JwtRequestFilter: Username found, SecurityContext is null. Attempting to authenticate user: {}", username);
+            UserDetails userDetails = null;
+            try {
+                userDetails = this.userDetailsService.loadUserByUsername(username);
+            } catch (Exception e) {
+                logger.error("JwtRequestFilter: Failed to load user details for {}: {}", username, e.getMessage());
+            }
+
+            if (userDetails != null && jwtUtils.validateJwtToken(jwt)) {
+                logger.debug("JwtRequestFilter: JWT is valid for user: {}. Setting SecurityContext.", username);
+                
+                // Create an Authentication object that is ALREADY AUTHENTICATED by this constructor
+                // This is the correct constructor to use when you have UserDetails and Authorities
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // The .setAuthenticated(true) is NOT needed here as this constructor already sets it as trusted.
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.debug("JwtRequestFilter: SecurityContext set for user: {}", username);
+            } else {
+                logger.debug("JwtRequestFilter: JWT validation failed for user {} or userDetails is null.", username);
+            }
+        } else if (username != null) { 
+             logger.debug("JwtRequestFilter: Username found but SecurityContext already has authentication. Skipping setting.");
+        } else { 
+             logger.debug("JwtRequestFilter: No username found from JWT. Skipping authentication attempt.");
+        }
+
+        filterChain.doFilter(request, response);
+    }
+ // Inside the doFilterInternal method, right after you extract the token
+    System.out.println("Extracted JWT from request: " + jwt);
+    // After you get the username from the token
+    System.out.println("Username from JWT: " + username);
+    // Before you create the UsernamePasswordAuthenticationToken
+    System.out.println("Creating UsernamePasswordAuthenticationToken for: " + username);
+}
